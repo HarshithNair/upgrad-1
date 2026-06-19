@@ -43,8 +43,8 @@ A professional, production-ready full-stack web application built using **Next.j
 Copy or create a `.env.local` file in the root directory:
 
 ```env
-# Admin Dashboard Password (Default: upgrad@admin2024)
-ADMIN_PASSWORD=upgrad@admin2024
+# Admin Dashboard Password
+ADMIN_PASSWORD=your-admin-password-here
 
 # Google Sheets Integration (Optional - Syncs registrations in real-time)
 GOOGLE_CLIENT_EMAIL=your-service-account@project.iam.gserviceaccount.com
