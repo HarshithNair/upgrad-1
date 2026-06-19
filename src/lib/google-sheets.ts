@@ -9,11 +9,10 @@ async function getGoogleInstance() {
 }
 
 export function isGoogleSheetsConfigured(): boolean {
-  return !!(
-    process.env.GOOGLE_CLIENT_EMAIL && 
-    process.env.GOOGLE_PRIVATE_KEY && 
-    process.env.GOOGLE_SHEET_ID
-  );
+  const email = process.env.GOOGLE_CLIENT_EMAIL || process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const key = process.env.GOOGLE_PRIVATE_KEY;
+  const sheetId = process.env.GOOGLE_SHEET_ID || process.env.GOOGLE_SPREADSHEET_ID;
+  return !!(email && key && sheetId);
 }
 
 export async function appendToGoogleSheet(data: {
@@ -23,9 +22,9 @@ export async function appendToGoogleSheet(data: {
   location: string;
   created_at: string;
 }): Promise<void> {
-  const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
+  const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL || process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-  const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
+  const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || process.env.GOOGLE_SPREADSHEET_ID;
 
   if (!GOOGLE_CLIENT_EMAIL || !GOOGLE_PRIVATE_KEY || !GOOGLE_SHEET_ID) {
     console.log('Google Sheets not configured — skipping sync.');
