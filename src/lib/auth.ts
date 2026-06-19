@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'upgrad@admin2024';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const SESSION_COOKIE = 'upgrad_admin_session';
 const SESSION_TOKEN = 'upgrad-admin-authenticated';
 
@@ -11,6 +11,10 @@ export async function verifyAdmin(): Promise<boolean> {
 }
 
 export function checkPassword(password: string): boolean {
+  if (!ADMIN_PASSWORD) {
+    console.error('ADMIN_PASSWORD environment variable is not configured.');
+    return false;
+  }
   return password === ADMIN_PASSWORD;
 }
 
