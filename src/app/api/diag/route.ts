@@ -2,7 +2,17 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   const email = process.env.GOOGLE_CLIENT_EMAIL || process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_PRIVATE_KEY;
+  
+  let rawKey = process.env.GOOGLE_PRIVATE_KEY;
+  let rawLength = rawKey ? rawKey.length : 0;
+  if (rawKey) {
+    if (rawKey.startsWith('"') && rawKey.endsWith('"')) {
+      rawKey = rawKey.substring(1, rawKey.length - 1);
+    } else if (rawKey.startsWith("'") && rawKey.endsWith("'")) {
+      rawKey = rawKey.substring(1, rawKey.length - 1);
+    }
+  }
+  const key = rawKey?.replace(/\\n/g, '\n');
   const sheetId = process.env.GOOGLE_SHEET_ID || process.env.GOOGLE_SPREADSHEET_ID;
 
   return NextResponse.json({
@@ -20,6 +30,7 @@ export async function GET() {
     resolvedSheetIdValue: sheetId || null,
 
     privateKeySet: !!key,
-    privateKeyLength: key ? key.length : 0
+    rawPrivateKeyLength: rawLength,
+    processedPrivateKeyLength: key ? key.length : 0
   });
 }
