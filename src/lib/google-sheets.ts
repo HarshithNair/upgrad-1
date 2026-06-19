@@ -8,12 +8,12 @@ async function getGoogleInstance() {
   return google;
 }
 
-const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
-const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
-
 export function isGoogleSheetsConfigured(): boolean {
-  return !!(GOOGLE_CLIENT_EMAIL && GOOGLE_PRIVATE_KEY && GOOGLE_SHEET_ID);
+  return !!(
+    process.env.GOOGLE_CLIENT_EMAIL && 
+    process.env.GOOGLE_PRIVATE_KEY && 
+    process.env.GOOGLE_SHEET_ID
+  );
 }
 
 export async function appendToGoogleSheet(data: {
@@ -23,7 +23,11 @@ export async function appendToGoogleSheet(data: {
   location: string;
   created_at: string;
 }): Promise<void> {
-  if (!isGoogleSheetsConfigured()) {
+  const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
+  const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
+
+  if (!GOOGLE_CLIENT_EMAIL || !GOOGLE_PRIVATE_KEY || !GOOGLE_SHEET_ID) {
     console.log('Google Sheets not configured — skipping sync.');
     return;
   }
