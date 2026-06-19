@@ -1,0 +1,6 @@
+{
+  "apphosting": {
+    "backendId": "upgrad-enrolment",
+    "rootDir": "/"
+  }
+}
