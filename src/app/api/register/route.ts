@@ -71,19 +71,12 @@ export async function POST(request: Request) {
       throw dbError;
     }
 
-    // 3. Sync to Google Sheets (blocking write, roll back database insertion on failure)
+    // 3. Sync to Google Sheets — awaited so the serverless function doesn't terminate
+    // before the request completes; errors are caught so registration still succeeds.
     try {
       await appendToGoogleSheet(registration);
     } catch (sheetError) {
-      console.error('Google Sheets sync failed, rolling back SQLite insert:', sheetError);
-      
-      // Rollback database insertion
-      db.prepare('DELETE FROM registrations WHERE id = ?').run(registration.id);
-
-      return NextResponse.json(
-        { success: false, error: 'Failed to write to Google Sheets. Please contact support or try again.' },
-        { status: 500 }
-      );
+      console.error('Google Sheets sync failed (registration was saved):', sheetError);
     }
 
     return NextResponse.json(
