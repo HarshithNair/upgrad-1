@@ -1,7 +1,10 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const DB_PATH = path.resolve(process.cwd(), 'database.sqlite');
+const isServerless = process.env.NODE_ENV === 'production' || !!process.env.VERCEL || !!process.env.AWS_LAMBDA || !!process.env.K_SERVICE;
+const DB_PATH = isServerless 
+  ? path.join('/tmp', 'database.sqlite') 
+  : path.resolve(process.cwd(), 'database.sqlite');
 
 declare global {
   var _db: Database.Database | undefined;
