@@ -17,6 +17,8 @@ export async function GET() {
 
   let authSuccess = false;
   let authError: { message: string; code?: string } | null = null;
+  let sheetAccessSuccess = false;
+  let sheetAccessError: { message: string; code?: string } | null = null;
 
   if (email && key) {
     try {
@@ -30,6 +32,22 @@ export async function GET() {
       });
       await auth.getClient();
       authSuccess = true;
+
+      if (sheetId) {
+        try {
+          const sheets = google.sheets({ version: 'v4', auth });
+          await sheets.spreadsheets.get({
+            spreadsheetId: sheetId,
+          });
+          sheetAccessSuccess = true;
+        } catch (sErr: unknown) {
+          const sErrObj = sErr as { message?: string; code?: string };
+          sheetAccessError = {
+            message: sErrObj.message || 'Unknown sheet access error',
+            code: sErrObj.code,
+          };
+        }
+      }
     } catch (err: unknown) {
       const errorObj = err as { message?: string; code?: string };
       authError = {
@@ -59,6 +77,8 @@ export async function GET() {
 
     authSuccess,
     authError,
+    sheetAccessSuccess,
+    sheetAccessError,
   });
 }
 
