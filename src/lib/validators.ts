@@ -7,7 +7,8 @@ export interface RegistrationData {
   full_name: string;
   email: string;
   phone: string;
-  location?: string;
+  location: string;
+  ready_to_relocate: string;
 }
 
 export function validateRegistration(data: RegistrationData): ValidationError[] {
@@ -31,6 +32,16 @@ export function validateRegistration(data: RegistrationData): ValidationError[] 
   const phoneDigits = data.phone ? data.phone.replace(/[^0-9]/g, '') : '';
   if (!phoneDigits || phoneDigits.length < 10 || phoneDigits.length > 15) {
     errors.push({ field: 'phone', message: 'Phone number must be 10–15 digits.' });
+  }
+
+  // Location
+  if (!data.location || data.location.trim().length < 2) {
+    errors.push({ field: 'location', message: 'Please enter your location.' });
+  }
+
+  // Ready to Relocate
+  if (!data.ready_to_relocate || !['Yes', 'No'].includes(data.ready_to_relocate)) {
+    errors.push({ field: 'ready_to_relocate', message: 'Please select Yes or No.' });
   }
 
   return errors;

@@ -38,6 +38,8 @@ function getRawDb(): Database.Database {
         email TEXT NOT NULL UNIQUE,
         phone TEXT NOT NULL UNIQUE,
         location TEXT NOT NULL,
+        ready_to_relocate TEXT NOT NULL DEFAULT 'No',
+        resume_url TEXT DEFAULT '',
         created_at DATETIME DEFAULT (datetime('now'))
       );
       CREATE INDEX IF NOT EXISTS idx_email ON registrations(email);
@@ -45,6 +47,14 @@ function getRawDb(): Database.Database {
       CREATE INDEX IF NOT EXISTS idx_location ON registrations(location);
       CREATE INDEX IF NOT EXISTS idx_created_at ON registrations(created_at);
     `);
+
+    // Migration: add new columns if they don't exist yet
+    try {
+      rawDb.exec(`ALTER TABLE registrations ADD COLUMN ready_to_relocate TEXT NOT NULL DEFAULT 'No'`);
+    } catch { /* column already exists */ }
+    try {
+      rawDb.exec(`ALTER TABLE registrations ADD COLUMN resume_url TEXT DEFAULT ''`);
+    } catch { /* column already exists */ }
   }
 
   return rawDb;
@@ -71,5 +81,7 @@ export interface Registration {
   email: string;
   phone: string;
   location: string;
+  ready_to_relocate: string;
+  resume_url: string;
   created_at: string;
 }

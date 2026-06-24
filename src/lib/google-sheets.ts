@@ -20,6 +20,8 @@ export async function appendToGoogleSheet(data: {
   email: string;
   phone: string;
   location: string;
+  ready_to_relocate: string;
+  resume_url: string;
   created_at: string;
 }): Promise<void> {
   const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL || process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -54,7 +56,7 @@ export async function appendToGoogleSheet(data: {
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: GOOGLE_SHEET_ID,
-      range: 'Sheet1!A:E',
+      range: 'Sheet1!A:G',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[
@@ -63,6 +65,8 @@ export async function appendToGoogleSheet(data: {
           data.email,
           data.phone,
           data.location,
+          data.ready_to_relocate,
+          data.resume_url,
         ]],
       },
     });
